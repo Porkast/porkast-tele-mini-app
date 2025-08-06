@@ -6,7 +6,7 @@ function AppDockNavigation() {
     const location = useLocation()
     const navigate = useNavigate()
     const isActive = (path: string) => {
-        if (location.pathname === "/" && path === "search") {
+        if (location.pathname === "/" && path === "/") {
             return true
         }
         return location.pathname === `/${path}`
@@ -17,12 +17,12 @@ function AppDockNavigation() {
             navigate("/subscription")
         } else if (tab === "listenlater") {
             navigate("/listenlater")
-        } else if (tab === "search") {
-            navigate("/search")
         } else if (tab === "playlist") {
             navigate("/playlist")
         } else if (tab === "account") {
             navigate("/account")
+        } else {
+            navigate("/")
         }
     }
 
@@ -41,7 +41,7 @@ function AppDockNavigation() {
                     <span className="dock-label">Listen Later</span>
                 </button>
 
-                <button className={isActive("search") ? "dock-active" : ""} onClick={() => onTabClicked("search")}>
+                <button className={isActive("/") ? "dock-active" : ""} onClick={() => onTabClicked("/")}>
                     <svg className="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" enableBackground="new 0 0 32 32" xmlSpace="preserve"><circle fill="none" stroke="#000000" strokeWidth={2} strokeMiterlimit={10} cx={19.5} cy={12.5} r={8.5} /><line fill="none" stroke="#000000" strokeWidth={2} strokeMiterlimit={10} x1={4} y1={28} x2={14} y2={18} /></svg>
                     <span className="dock-label">Search</span>
                 </button>

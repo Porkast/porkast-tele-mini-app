@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type SearchInputProps = {
     placeholder?: string
@@ -7,11 +8,13 @@ type SearchInputProps = {
 export default function SearchInput(props: SearchInputProps) {
 
     const [searchInputVal, setSearchInputVal] = useState('');
+    const navigate = useNavigate();
 
     const onSearchButtonClicked = () => {
         if (searchInputVal.length == 0) {
             return
         }
+        navigate(`/search?q=${searchInputVal}`)
     }
 
     useEffect(() => {
