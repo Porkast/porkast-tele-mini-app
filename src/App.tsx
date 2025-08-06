@@ -1,14 +1,13 @@
 import './App.css'
+import AppDockNavigation from './component/AppDockNavigation'
 
 function App() {
 
-  return (
-    <>
-      <div className='flex with-full h-screen justify-center items-center'>
-        Hello Porkast Mini App
-      </div>
-    </>
-  )
+    return (
+        <>
+            <AppDockNavigation />
+        </>
+    )
 }
 
 export default App
