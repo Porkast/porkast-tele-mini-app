@@ -1,0 +1,98 @@
+import { getUserSessionInfo } from "./suapbase";
+import { ServerUserInfo } from "./user";
+import type { FeedItem } from "../types/FeedItem";
+import type { UserPlaylistDto } from "../types/Playlist";
+
+export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {
+
+    const respJson = await fetch(`api/playlist/item`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        },
+        body: JSON.stringify({
+            channelId: channelId,
+            guid: itemId,
+            playlistId: playlistId,
+            userId: userId,
+            source: source
+        })
+    }).then(resp => resp.json()).catch(err => {
+        console.log(err);
+    });
+
+    return respJson;
+}
+
+export async function getUserPlaylistByUserId(userId: string, page: number = 1): Promise<JsonResponse> {
+
+    const limit = 10
+    const offset = (page - 1) * limit
+
+    const respJson = await fetch(`api/playlist/list/${userId}?limit=${limit}&offset=${offset}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        }
+    }).then(resp => resp.json()).catch(err => {
+        console.log(err);
+    })
+
+    return {
+        code: respJson.code,
+        message: respJson.message,
+        data: respJson.data
+    }
+}
+
+export async function createPlaylist(userId: string, name: string, description: string = ''): Promise<JsonResponse> {
+    const respJson = await fetch(`api/playlist`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        },
+        body: JSON.stringify({
+            userId: userId,
+            name: name,
+            description: description
+        })
+    }).then(resp => resp.json()).catch(err => {
+        console.log(err);
+    })
+    return respJson
+}
+
+export async function getPlaylistInfoById(playlistId: string): Promise<{ code: number, message: string, data: UserPlaylistDto }> {
+    const respJson = await fetch(`api/playlist/${playlistId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        }
+    }).then(resp => resp.json()).catch(err => {
+        console.log(err);
+    })
+    return respJson
+}
+
+export const getPlaylistItemListByUserId = async (userId: string, playlistId: string, page: number): Promise<{ code: number, message: string, data: { userInfo: ServerUserInfo, playlist: FeedItem[] } }> => {
+
+    const limit = 10
+    const offset = (page - 1) * limit
+    const resp = await fetch(`api/playlist/list/${userId}/${playlistId}?limit=${limit}&offset=${offset}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        }
+    })
+    const respJson = await resp.json()
+    return {
+        code: respJson.code,
+        message: respJson.message,
+        data: respJson.data
+    }
+}
