@@ -18,12 +18,12 @@ function App() {
                     <Route path="subscription" element={<SubscriptionPage />} />
                     <Route path="listenlater" element={<ListenLaterPage />} />
                     <Route path="" element={<SearchPage />} />
-                    <Route path="search" element={<SearchResultPage />} />
                     <Route path="playlist" element={<PlayListPage />} />
                     <Route path="account" element={<AccountPage />} />
                     {/* Add a catch-all route if needed */}
                     <Route path="*" element={<div>Not Found</div>} />
                 </Route>
+                <Route path="search" element={<SearchResultPage />} />
             </Routes>
         </BrowserRouter>
     )

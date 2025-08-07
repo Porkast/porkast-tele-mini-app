@@ -1,9 +1,9 @@
-import { addToPlayList, getUserPlaylistByUserId } from "@/libs/playlist"
-import { UserPlaylistDto } from "@/types/playlist"
 import { type Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
-import { getUserSessionInfo, isUserLoggedIn } from "@/libs/suapbase"
+import type { UserPlaylistDto } from "../types/Playlist"
+import { addToPlayList, getUserPlaylistByUserId } from "../libs/Playlist"
+import type { UserInfo } from "../types/UserInfo"
 
 export type AddToPlayListDialogProps = {
 
@@ -40,7 +40,13 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
                     setTitle(itemTitle)
                     if (dialog) {
                         dialog.showModal();
-                        const userInfo = await getUserSessionInfo()
+                        const userInfo: UserInfo = {
+                            userId: '',
+                            email: '',
+                            token: '',
+                            username: '',
+                            avatar: ''
+                        }
                         setCurrentUserId(userInfo.userId)
                         setGuid(guid)
                         setFeedId(feedId)

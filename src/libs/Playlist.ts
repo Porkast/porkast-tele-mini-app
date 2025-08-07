@@ -1,7 +1,7 @@
-import { getUserSessionInfo } from "./suapbase";
-import { ServerUserInfo } from "./user";
 import type { FeedItem } from "../types/FeedItem";
 import type { UserPlaylistDto } from "../types/Playlist";
+import type { JsonResponse } from "../types/Response";
+import type { ServerUserInfo } from "./User";
 
 export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {
 
@@ -9,7 +9,7 @@ export async function addToPlayList(userId: string, channelId: string, itemId: s
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': (await getUserSessionInfo()).token
+            'Authorization': ''
         },
         body: JSON.stringify({
             channelId: channelId,
@@ -34,7 +34,7 @@ export async function getUserPlaylistByUserId(userId: string, page: number = 1):
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': (await getUserSessionInfo()).token
+            'Authorization': ''
         }
     }).then(resp => resp.json()).catch(err => {
         console.log(err);
@@ -52,7 +52,7 @@ export async function createPlaylist(userId: string, name: string, description: 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': (await getUserSessionInfo()).token
+            'Authorization': ''
         },
         body: JSON.stringify({
             userId: userId,
@@ -70,7 +70,7 @@ export async function getPlaylistInfoById(playlistId: string): Promise<{ code: n
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': (await getUserSessionInfo()).token
+            'Authorization': ''
         }
     }).then(resp => resp.json()).catch(err => {
         console.log(err);
@@ -86,7 +86,7 @@ export const getPlaylistItemListByUserId = async (userId: string, playlistId: st
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': (await getUserSessionInfo()).token
+            'Authorization': ''
         }
     })
     const respJson = await resp.json()
