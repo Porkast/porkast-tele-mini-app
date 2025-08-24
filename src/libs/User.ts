@@ -1,7 +1,8 @@
+import { API_URL } from "./Constants";
 
 export type ServerUserInfo = {
-    id: string;
-    username?: string;
+    userId: string;
+    telegramId: string,
     nickname?: string;
     token?: string;
     password?: string;
@@ -28,13 +29,27 @@ declare global {
 }
 
 export const getTelegramUserInfo = (): TelegramUser => {
-    const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    const webApp = window.Telegram.WebApp;
+    webApp.ready(); 
+    webApp.expand();
+    const user = webApp?.initDataUnsafe?.user;
     return {
         id: user.id,
         first_name: user.first_name,
         last_name: user.last_name,
         username: user.username
     }
+}
+
+export const getDevTelegramUserInfo = (): TelegramUser => {
+    const user: TelegramUser = {
+        id: import.meta.env.VITE_DEV_TELEGRAM_ID,
+        first_name: import.meta.env.VITE_DEV_TELEGRAM_FIRST_NAME,
+        last_name: import.meta.env.VITE_DEV_TELEGRAM_LAST_NAME,
+        username: import.meta.env.VITE_DEV_TELEGRAM_USERNAME
+    }
+
+    return user
 }
 
 export const getTempNickname = (serverUserInfo: ServerUserInfo): string => {
@@ -60,9 +75,7 @@ export const getNickname = (email: string, nickname: string): string => {
 }
 
 export const syncToServer = async (userInfo: ServerUserInfo) => {
-
-
-    const resp = await fetch(``, {
+    const resp = await fetch(`${API_URL}/user/sync`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -70,7 +83,7 @@ export const syncToServer = async (userInfo: ServerUserInfo) => {
         },
         body: JSON.stringify(
             {
-                userId: userInfo.id,
+                userId: userInfo.userId,
                 email: userInfo.email,
                 phone: userInfo.phone,
                 nickname: userInfo.nickname,
@@ -85,8 +98,8 @@ export const syncToServer = async (userInfo: ServerUserInfo) => {
     return resp
 }
 
-export const getUserInfoFromServer = async (userId: string): Promise<{ code: number, message: string, data: ServerUserInfo }> => {
-    const resp = await fetch(`api/user/info/${userId}`)
+export const getUserInfoByTelegramUserId = async (userId: string): Promise<{ code: number, message: string, data: ServerUserInfo }> => {
+    const resp = await fetch(`${API_URL}/user/tele_id/${userId}`)
     const respJson = await resp.json()
 
     return {

@@ -1,6 +1,7 @@
 import type { UserListenLaterDto } from "../types/ListenLater";
 import type { JsonResponse } from "../types/Response";
 import type { UserInfo } from "../types/UserInfo";
+import { API_URL } from "./Constants";
 
 export async function addToListenLater(channelId: string, itemId: string, userId: string, source: string): Promise<JsonResponse> {
 
@@ -11,7 +12,7 @@ export async function addToListenLater(channelId: string, itemId: string, userId
         username: '',
         avatar: ''
     };
-    const respJson = await fetch(`api/listenlater/item/`, {
+    const respJson = await fetch(`${API_URL}/listenlater/item/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -34,7 +35,7 @@ export const getListenLaterListByUserId = async (userId: string, page: number): 
 
     const limit = 10
     const offset = (page - 1) * limit
-    const resp = await fetch(`api/listenlater/list?userId=${userId}&limit=${limit}&offset=${offset}`, {
+    const resp = await fetch(`${API_URL}/listenlater/list?userId=${userId}&limit=${limit}&offset=${offset}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

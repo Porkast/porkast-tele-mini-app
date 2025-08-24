@@ -1,11 +1,13 @@
-import { createContext, useContext, useRef, } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, } from 'react';
 import AudioPlayer, { type AudioPlayerRef } from './AudioPlayer';
 import { MsgAlert, type MsgAlertRef, type MsgAlertType } from './MsgAlert';
 import AddToPlayListDialog, { type AddToPlayListDialogRef } from './AddToPlayListDialog';
 import CreatePlaylistDialog, { type CreatePlaylistDialogRef } from './CreatePlaylistDialog';
 import type { AudioPlayerParams } from '../types/AudioPlayer';
+import { getDevTelegramUserInfo, getTelegramUserInfo, getUserInfoByTelegramUserId, type ServerUserInfo } from '../libs/User';
 
 type AppContextType = {
+    userInfo: ServerUserInfo | null;
     updateAudio: (params: AudioPlayerParams) => void;
     play: () => void;
     pause: () => void;
@@ -16,6 +18,7 @@ type AppContextType = {
 };
 
 const AppContext = createContext<AppContextType>({
+    userInfo: null,
     play: () => { },
     pause: () => { },
     seek: (time: number) => { },
@@ -41,6 +44,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const msgAlertRef = useRef<MsgAlertRef>(null)
     const addToPlaylistModalRef = useRef<AddToPlayListDialogRef>(null)
     const createPlaylistModalRef = useRef<CreatePlaylistDialogRef>(null)
+    const [userInfo, setUserInfo] = useState<ServerUserInfo | null>(null);
     const appContextValue: AppContextType = {
         play: () => {
             if (audioRef.current) {
@@ -63,15 +67,37 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             }
         },
         showMsgAlert: function (msg: string, msgType: MsgAlertType): void {
-            msgAlertRef.current?.showAlert(msg, msgType)
+            msgAlertRef.current?.showAlert(msg, msgType);
         },
         addToPlayListFunction: function (userId: string, title: string, feedId: string, guid: string, source: string): void {
-            addToPlaylistModalRef.current?.showDialog(title, feedId, guid, source)
+            addToPlaylistModalRef.current?.showDialog(title, feedId, guid, source);
         },
         createPlaylistFunction: function (isMockData: boolean): void {
-            createPlaylistModalRef.current?.showDialog(isMockData)
-        }
+            createPlaylistModalRef.current?.showDialog(isMockData);
+        },
+        userInfo: userInfo,
     };
+
+    useEffect(() => {
+        const getUserInfoByTeleId = async (): Promise<ServerUserInfo> => {
+            const telegramUserInfo = import.meta.env.MODE === 'development' ? getDevTelegramUserInfo() : getTelegramUserInfo();
+            console.log(`telegramUserInfo: ${JSON.stringify(telegramUserInfo)}`);
+            const userInfo = await getUserInfoByTelegramUserId(String(telegramUserInfo.id));
+            return userInfo.data;
+        }
+        const userInfoCacheStr = localStorage.getItem('userInfo');
+        if (userInfoCacheStr) {
+            setUserInfo(JSON.parse(userInfoCacheStr));
+        } else {
+            getUserInfoByTeleId().then(userInfo => {
+                if (userInfo.userId === '' || userInfo.userId === undefined || userInfo.userId === null) {
+                    return
+                }
+                setUserInfo(userInfo);
+                localStorage.setItem('userInfo', JSON.stringify(userInfo));
+            });
+        }
+    }, []);
 
     return (
         <AppContext.Provider value={appContextValue}>

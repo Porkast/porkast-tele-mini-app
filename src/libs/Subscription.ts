@@ -1,10 +1,11 @@
 import type { FeedItem } from "../types/FeedItem"
 import type { JsonResponse } from "../types/Response"
 import type { SubscriptionDataDto } from "../types/Subscription"
+import { API_URL } from "./Constants"
 
 
 export const subscribeSearchKeyword = async (userId: string, searchKeyword: string, country: string = 'US', source: string = 'itunes', excludeFeedId: string = '', token: string): Promise<JsonResponse> => {
-    var apiUrl = `api/subscription/keyword`
+    var apiUrl = `${API_URL}/subscription/keyword`
     var params = {
         userId: userId,
         keyword: searchKeyword,
@@ -27,7 +28,7 @@ export const subscribeSearchKeyword = async (userId: string, searchKeyword: stri
 }
 
 export const subscribeUserListenLater = async (userId: string, creatorId: string, token: string): Promise<JsonResponse> => {
-    var apiUrl = `api/subscription/listenlater`
+    var apiUrl = `${API_URL}/subscription/listenlater`
     var params = {
         userId: userId,
         creatorId: creatorId
@@ -48,7 +49,7 @@ export const subscribeUserListenLater = async (userId: string, creatorId: string
 
 export const getUserSubscriptionList = async (userId: string): Promise<{ code: number, message: string, data: SubscriptionDataDto[] }> => {
     const subscriptionList: SubscriptionDataDto[] = []
-    const resp = await fetch(`api/subscription/list?userId=${userId}`)
+    const resp = await fetch(`${API_URL}/subscription/list?userId=${userId}`)
     const respJson = await resp.json()
     if (respJson && respJson.data) {
         subscriptionList.push(...respJson.data)
@@ -62,7 +63,7 @@ export const getUserSubscriptionList = async (userId: string): Promise<{ code: n
 
 export const getUserKeywordSubscriptionItemList = async (userId: string, keyword: string, page: string): Promise<{ code: number, message: string, data: FeedItem[] }> => {
 
-    var requestAPI = `api/subscription/${userId}/${keyword}`
+    var requestAPI = `${API_URL}/subscription/${userId}/${keyword}`
     if (page) {
         requestAPI = `${requestAPI}?page=${page}`
     }
