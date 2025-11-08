@@ -49,7 +49,7 @@ export const subscribeUserListenLater = async (userId: string, creatorId: string
 
 export const getUserSubscriptionList = async (userId: string): Promise<{ code: number, message: string, data: SubscriptionDataDto[] }> => {
     const subscriptionList: SubscriptionDataDto[] = []
-    const resp = await fetch(`${API_URL}/subscription/list?userId=${userId}`)
+    const resp = await fetch(`${API_URL}/subscribe/list?userId=${userId}`)
     const respJson = await resp.json()
     if (respJson && respJson.data) {
         subscriptionList.push(...respJson.data)

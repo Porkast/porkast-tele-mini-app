@@ -12,7 +12,7 @@ export default function SubscriptionPage() {
     const page = searchParams.get('page') || '1'
 
     const teleUserinfo = getTelegramUserInfo()
-    const userId = teleUserinfo.id
+    const teleUserId = teleUserinfo.id
     const nickname = teleUserinfo.first_name
 
     const [subscriptionList, setSubscriptionList] = useState<SubscriptionDataDto[]>([])
@@ -26,10 +26,10 @@ export default function SubscriptionPage() {
 
     useEffect(() => {
         async function initPageInfo() {
-            const userInfoResp = await getUserInfoByTelegramUserId(userId.toString())
+            const userInfoResp = await getUserInfoByTelegramUserId(teleUserId.toString())
             setUserInfo(userInfoResp.data)
             var subscriptionDataList: SubscriptionDataDto[] = []
-            const subscriptionResp = await getUserSubscriptionList(userId.toString())
+            const subscriptionResp = await getUserSubscriptionList(userInfoResp.data.userId)
             subscriptionDataList = subscriptionResp.data
             setSubscriptionList(subscriptionDataList)
             if (subscriptionDataList && subscriptionDataList.length > 0) {
@@ -50,7 +50,7 @@ export default function SubscriptionPage() {
         } else {
             nextPage = parseInt(page) + 1
         }
-        setNextPageUrl("/subscription/" + userId + "/" + "?page=" + nextPage)
+        setNextPageUrl("/subscription/" + userInfo?.userId + "/" + "?page=" + nextPage)
 
         let prePage = 0
         if (parseInt(page) > 1) {
@@ -58,7 +58,7 @@ export default function SubscriptionPage() {
         } else {
             prePage = parseInt(page)
         }
-        setPrevPageUrl("/subscription/" + userId + "/" + "?page=" + prePage)
+        setPrevPageUrl("/subscription/" + userInfo?.userId + "/" + "?page=" + prePage)
 
         if (parseInt(page) >= totalPage) {
             setIsNextBtnClickable(false)
@@ -96,7 +96,7 @@ export default function SubscriptionPage() {
                         subscriptionList?.map((item, index) => {
                             const encodeKeyword = encodeURIComponent(item.Keyword)
                             return (
-                                <a key={index} href={`/subscription/${userId}/${encodeKeyword}`} className="card w-full bg-base-100 shadow-xl mb-6">
+                                <a key={index} href={`/subscription/${userInfo?.userId}/${encodeKeyword}`} className="card w-full bg-base-100 shadow-xl mb-6">
                                     <div className="card-body">
                                         {
                                             item.Keyword ? (
