@@ -83,3 +83,17 @@ export const getUserKeywordSubscriptionItemList = async (userId: string, keyword
         data: respJson.data
     }
 }
+
+export const unsubscribeKeyword = async (userId: string, keyword: string): Promise<JsonResponse> => {
+    var apiUrl = `${API_URL}/api/subscription/${userId}/${encodeURIComponent(keyword)}`
+
+    const resp = await fetch(apiUrl, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+
+    const respJson = await resp.json()
+    return respJson
+}

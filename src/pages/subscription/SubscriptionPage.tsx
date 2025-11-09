@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { AvatarImage } from "../component/PorkastImage"
-import { getTelegramUserInfo, getUserInfoByTelegramUserId, type ServerUserInfo } from "../libs/User"
-import type { SubscriptionDataDto } from "../types/Subscription"
-import { Link } from "react-router-dom"
-import { getUserSubscriptionList } from "../libs/Subscription"
-import { formatDateTime } from "../libs/Common"
+import { AvatarImage } from "../../component/PorkastImage"
+import { getTelegramUserInfo, getUserInfoByTelegramUserId, type ServerUserInfo } from "../../libs/User"
+import type { SubscriptionDataDto } from "../../types/Subscription"
+import { Link, Outlet } from "react-router-dom"
+import { getUserSubscriptionList } from "../../libs/Subscription"
+import { formatDateTime } from "../../libs/Common"
 
 export default function SubscriptionPage() {
 
@@ -145,6 +145,7 @@ export default function SubscriptionPage() {
                             }
                         </div>
                     </div>
+                    <Outlet />
                 </div>
             </div>
         </>

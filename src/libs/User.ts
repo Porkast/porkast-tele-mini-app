@@ -32,7 +32,10 @@ export const getTelegramUserInfo = (): TelegramUser => {
     const webApp = window.Telegram.WebApp;
     webApp.ready(); 
     webApp.expand();
-    const user = webApp?.initDataUnsafe?.user;
+    let user = webApp?.initDataUnsafe?.user;
+    if (import.meta.env.MODE === 'development') {
+        user = getDevTelegramUserInfo()
+    }
     console.log(`telegram user info: ${JSON.stringify(user)}`);
     return {
         id: user.id,

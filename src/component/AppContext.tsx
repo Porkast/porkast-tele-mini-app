@@ -4,7 +4,7 @@ import { MsgAlert, type MsgAlertRef, type MsgAlertType } from './MsgAlert';
 import AddToPlayListDialog, { type AddToPlayListDialogRef } from './AddToPlayListDialog';
 import CreatePlaylistDialog, { type CreatePlaylistDialogRef } from './CreatePlaylistDialog';
 import type { AudioPlayerParams } from '../types/AudioPlayer';
-import { getDevTelegramUserInfo, getTelegramUserInfo, getUserInfoByTelegramUserId, type ServerUserInfo } from '../libs/User';
+import { getTelegramUserInfo, getUserInfoByTelegramUserId, type ServerUserInfo } from '../libs/User';
 
 type AppContextType = {
     userInfo: ServerUserInfo | null;
@@ -80,7 +80,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     useEffect(() => {
         const getUserInfoByTeleId = async (): Promise<ServerUserInfo> => {
-            const telegramUserInfo = import.meta.env.MODE === 'development' ? getDevTelegramUserInfo() : getTelegramUserInfo();
+            const telegramUserInfo =  getTelegramUserInfo();
             console.log(`telegramUserInfo: ${JSON.stringify(telegramUserInfo)}`);
             const userInfo = await getUserInfoByTelegramUserId(String(telegramUserInfo.id));
             return userInfo.data;

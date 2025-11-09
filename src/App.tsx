@@ -5,9 +5,10 @@ import AppDockNavigation from './component/AppDockNavigation'
 import ListenLaterPage from './pages/ListenLaterPage'
 import PlayListPage from './pages/PlayListPage'
 import AccountPage from './pages/AccountPage'
-import SubscriptionPage from './pages/SubscriptionPage'
+import SubscriptionPage from './pages/subscription/SubscriptionPage'
 import SearchResultPage from './pages/SearchResultPage'
 import { AppProvider } from './component/AppContext'
+import SubscriptionKeywordListPage from './pages/subscription/SubscriptionKeywordListPage'
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
                         <Route path="*" element={<div>Not Found</div>} />
                     </Route>
                     <Route path="search" element={<SearchResultPage />} />
+                    <Route path="/subscription/:userId/:keyword" element={<SubscriptionKeywordListPage />} />
                 </Routes>
             </BrowserRouter>
         </AppProvider>
