@@ -68,7 +68,7 @@ export default function SubscriptionKeywordListPage() {
         } else {
             nextPage = parseInt(page) + 1
         }
-        setNextPageUrl("/subscription/" + pageUserId + "/" + keyword + "?page=" + nextPage)
+        setNextPageUrl("/subscription/" + teleUserId + "/" + keyword + "?page=" + nextPage)
 
         let prePage = 0
         if (parseInt(page) > 1) {
@@ -76,7 +76,7 @@ export default function SubscriptionKeywordListPage() {
         } else {
             prePage = parseInt(page)
         }
-        setPrevPageUrl("/subscription/" + pageUserId + "/" + keyword + "?page=" + prePage)
+        setPrevPageUrl("/subscription/" + teleUserId + "/" + keyword + "?page=" + prePage)
 
         if (parseInt(page) >= totalPage) {
             setIsNextBtnClickable(false)
@@ -104,8 +104,8 @@ export default function SubscriptionKeywordListPage() {
                                     {
                                         isMyPage ? (
                                             <div className="mt-4 -ml-2 flex justify-start">
-                                                <ShareSearchSubscriptionBtn userId={pageUserId || ""} keyword={keyword || ""} />
-                                                <UnsubscribeKeywordButton userId={pageUserId || ""} keyword={keyword || ""} />
+                                                <ShareSearchSubscriptionBtn userId={teleUserId || ""} keyword={keyword || ""} />
+                                                <UnsubscribeKeywordButton userId={teleUserId || ""} keyword={keyword || ""} />
                                             </div>
                                         ) : (
                                             <div className="mt-4 -ml-2 flex justify-start">

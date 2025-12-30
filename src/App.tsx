@@ -9,6 +9,8 @@ import SubscriptionPage from './pages/subscription/SubscriptionPage'
 import SearchResultPage from './pages/SearchResultPage'
 import { AppProvider } from './component/AppContext'
 import SubscriptionKeywordListPage from './pages/subscription/SubscriptionKeywordListPage'
+import PodcastChannelPage from './pages/PodcastChannelPage'
+import PodcastEpisodePage from './pages/PodcastEpisodePage'
 
 function App() {
 
@@ -26,7 +28,9 @@ function App() {
                         <Route path="*" element={<div>Not Found</div>} />
                     </Route>
                     <Route path="search" element={<SearchResultPage />} />
-                    <Route path="/subscription/:userId/:keyword" element={<SubscriptionKeywordListPage />} />
+                    <Route path="/subscription/:teleUserId/:keyword" element={<SubscriptionKeywordListPage />} />
+                    <Route path="/podcast/:channelId" element={<PodcastChannelPage />} />
+                    <Route path="/podcast/:channelId/episode/:itemId" element={<PodcastEpisodePage />} />
                 </Routes>
             </BrowserRouter>
         </AppProvider>

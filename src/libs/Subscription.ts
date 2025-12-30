@@ -63,7 +63,7 @@ export const getUserSubscriptionList = async (userId: string): Promise<{ code: n
 
 export const getUserKeywordSubscriptionItemList = async (userId: string, keyword: string, page: string): Promise<{ code: number, message: string, data: FeedItem[] }> => {
 
-    var requestAPI = `${API_URL}/subscription/${userId}/${keyword}`
+    var requestAPI = `${API_URL}/subscribe/${userId}/${keyword}`
     if (page) {
         requestAPI = `${requestAPI}?page=${page}`
     }
@@ -72,7 +72,6 @@ export const getUserKeywordSubscriptionItemList = async (userId: string, keyword
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': ''
         }
     })
     const respJson = await resp.json()
