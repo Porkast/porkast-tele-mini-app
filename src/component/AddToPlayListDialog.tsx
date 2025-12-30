@@ -3,7 +3,7 @@ import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
 import type { UserPlaylistDto } from "../types/Playlist"
 import { addToPlayList, getUserPlaylistByUserId } from "../libs/Playlist"
-import type { UserInfo } from "../types/UserInfo"
+import { getTelegramUserInfo, getUserInfoByTelegramUserId } from "../libs/User"
 
 export type AddToPlayListDialogProps = {
 
@@ -40,14 +40,10 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
                     setTitle(itemTitle)
                     if (dialog) {
                         dialog.showModal();
-                        const userInfo: UserInfo = {
-                            userId: '',
-                            email: '',
-                            token: '',
-                            username: '',
-                            avatar: ''
-                        }
-                        setCurrentUserId(userInfo.userId)
+                        const teleUserInfo = getTelegramUserInfo()
+                        const userInfoResp = await getUserInfoByTelegramUserId(teleUserInfo.id.toString())
+                        const userId = userInfoResp.data.userId
+                        setCurrentUserId(userId)
                         setGuid(guid)
                         setFeedId(feedId)
                         setSource(source)
@@ -55,7 +51,7 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
                             setIsMockData(true)
                             return
                         }
-                        const userPlaylistResp = await getUserPlaylistByUserId(userInfo.userId)
+                        const userPlaylistResp = await getUserPlaylistByUserId(userId)
                         if (userPlaylistResp) {
                             setUserPlaylists(userPlaylistResp.data)
                         }
