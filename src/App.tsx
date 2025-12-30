@@ -3,7 +3,9 @@ import './App.css'
 import SearchPage from './pages/SearchPage'
 import AppDockNavigation from './component/AppDockNavigation'
 import ListenLaterPage from './pages/ListenLaterPage'
-import PlayListPage from './pages/PlayListPage'
+import PlayListIndexPage from './pages/playlist/index'
+import PlayListPage from './pages/playlist/PlayListPage'
+import PlayListDetailPage from './pages/playlist/PlayListDetailPage'
 import AccountPage from './pages/AccountPage'
 import SubscriptionPage from './pages/subscription/SubscriptionPage'
 import SearchResultPage from './pages/SearchResultPage'
@@ -23,7 +25,9 @@ function App() {
                         <Route path="subscription" element={<SubscriptionPage />} />
                         <Route path="listenlater/:teleUserId" element={<ListenLaterPage />} />
                         <Route path="" element={<SearchPage />} />
-                        <Route path="playlist" element={<PlayListPage />} />
+                        <Route path="playlist" element={<PlayListIndexPage />} />
+                        <Route path="playlist/:teleUserId" element={<PlayListPage />} />
+                        <Route path="playlist/:teleUserId/:playlistId" element={<PlayListDetailPage />} />
                         <Route path="account" element={<AccountPage />} />
                         <Route path="*" element={<div>Not Found</div>} />
                     </Route>

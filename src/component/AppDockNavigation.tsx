@@ -14,13 +14,13 @@ function AppDockNavigation() {
     }
 
     const onTabClicked = (tab: string) => {
+        const sessionUser = getTelegramUserInfo()
         if (tab === "subscription") {
             navigate("/subscription")
         } else if (tab === "listenlater") {
-            const sessionUser = getTelegramUserInfo()
             navigate(`/listenlater/${sessionUser.id}`)
         } else if (tab === "playlist") {
-            navigate("/playlist")
+            navigate(`/playlist/${sessionUser.id}`)
         } else if (tab === "account") {
             navigate("/account")
         } else {

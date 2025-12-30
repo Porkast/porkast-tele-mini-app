@@ -2,7 +2,6 @@ import type { FeedItem } from "../types/FeedItem";
 import type { UserPlaylistDto } from "../types/Playlist";
 import type { JsonResponse } from "../types/Response";
 import { API_URL } from "./Constants";
-import type { ServerUserInfo } from "./User";
 
 export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {
 
@@ -35,12 +34,11 @@ export async function getUserPlaylistByUserId(userId: string, page: number = 1):
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': ''
         }
     }).then(resp => resp.json()).catch(err => {
         console.log(err);
     })
-
+    console.log(`The user playlist response is : ${respJson}`)
     return {
         code: respJson.code,
         message: respJson.message,
@@ -71,7 +69,6 @@ export async function getPlaylistInfoById(playlistId: string): Promise<{ code: n
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': ''
         }
     }).then(resp => resp.json()).catch(err => {
         console.log(err);
@@ -79,7 +76,7 @@ export async function getPlaylistInfoById(playlistId: string): Promise<{ code: n
     return respJson
 }
 
-export const getPlaylistItemListByUserId = async (userId: string, playlistId: string, page: number): Promise<{ code: number, message: string, data: { userInfo: ServerUserInfo, playlist: FeedItem[] } }> => {
+export const getPlaylistItemListByUserId = async (userId: string, playlistId: string, page: number): Promise<{ code: number, message: string, data: FeedItem[] }> => {
 
     const limit = 10
     const offset = (page - 1) * limit
@@ -87,7 +84,6 @@ export const getPlaylistItemListByUserId = async (userId: string, playlistId: st
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': ''
         }
     })
     const respJson = await resp.json()
