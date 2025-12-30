@@ -9,8 +9,11 @@ import AddListenLaterButton from '../component/AddListenLaterBtn';
 import AddToPlaylistButton from '../component/AddToPlaylistBtn';
 import type { FeedChannel } from '../types/FeedChannel';
 import type { FeedItem } from '../types/FeedItem';
+import { useTelegramBackButton } from '../hooks/useTelegramBackButton';
 
 export default function PodcastEpisodePage() {
+  useTelegramBackButton()
+
   const { channelId, itemId } = useParams<{ channelId: string; itemId: string }>();
 
   const [loading, setLoading] = useState(true);

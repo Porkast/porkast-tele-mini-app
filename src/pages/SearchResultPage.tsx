@@ -9,6 +9,7 @@ import Loading from "../component/Loading"
 import type { SubscribeKeywrodDialogRef } from "../component/SubscribeKeywrodDialog"
 import SubscribeKeywrodDialog from "../component/SubscribeKeywrodDialog"
 import Footer from "../component/Footer"
+import { useTelegramBackButton } from "../hooks/useTelegramBackButton"
 
 const Page = {
     NextPage: 'NextPage',
@@ -19,6 +20,7 @@ type Page = 'NextPage' | 'PrePage'
 
 
 export default function SearchResultPage() {
+    useTelegramBackButton()
 
     const [searchResultData, setSearchResultData] = useState<FeedItem[]>([])
     const [searchResultCount, setSearchResultCount] = useState(0)

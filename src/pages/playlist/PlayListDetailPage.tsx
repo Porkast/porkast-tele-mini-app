@@ -9,8 +9,11 @@ import { AvatarImage } from "../../component/PorkastImage";
 import { SharePlaylistBtn } from "../../component/Share";
 import type { FeedItem } from "../../types/FeedItem";
 import type { UserPlaylistDto } from "../../types/Playlist";
+import { useTelegramBackButton } from "../../hooks/useTelegramBackButton";
 
 export default function PlayListDetailPage() {
+    useTelegramBackButton()
+
     const { teleUserId, playlistId } = useParams<{ teleUserId: string; playlistId: string }>();
     const searchParams = new URLSearchParams(window.location.search);
     const page = searchParams.get('page') || '1'

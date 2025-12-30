@@ -10,8 +10,11 @@ import { ShareSearchSubscriptionBtn } from '../../component/Share';
 import UnsubscribeKeywordButton from '../../component/UnsubscribeKeywordButton';
 import SubscribeListenLaterBtn from '../../component/SubscribeListenLaterButton';
 import { getUserKeywordSubscriptionItemList } from '../../libs/Subscription';
+import { useTelegramBackButton } from '../../hooks/useTelegramBackButton';
 
 export default function SubscriptionKeywordListPage() {
+    useTelegramBackButton()
+
     const { teleUserId, keyword } = useParams<{ teleUserId: string; keyword: string }>();
     const searchParams = new URLSearchParams(window.location.search);
     const page = searchParams.get('page') || '1'

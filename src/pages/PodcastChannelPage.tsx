@@ -8,8 +8,11 @@ import Footer from '../component/Footer';
 import { AvatarImage } from '../component/PorkastImage';
 import type { FeedChannel } from '../types/FeedChannel';
 import type { FeedItem } from '../types/FeedItem';
+import { useTelegramBackButton } from '../hooks/useTelegramBackButton';
 
 export default function PodcastChannelPage() {
+    useTelegramBackButton()
+
     const { channelId } = useParams<{ channelId: string }>();
     const [searchParams] = useSearchParams();
     const page = searchParams.get('page') || '1';
