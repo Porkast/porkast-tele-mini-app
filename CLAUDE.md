@@ -32,6 +32,8 @@ bun run preview      # Preview production build
 |------|---------|
 | `src/component/` | Reusable UI components (dialogs, navigation, player) |
 | `src/pages/` | Route-based page components |
+| `src/pages/playlist/` | Playlist pages (index, list, detail) |
+| `src/pages/subscription/` | Subscription pages |
 | `src/libs/` | API client libraries and utilities |
 | `src/types/` | TypeScript interfaces |
 
@@ -41,9 +43,11 @@ Routes are defined in `App.tsx`:
 - `/` - SearchPage (default)
 - `/search` - SearchResultPage
 - `/subscription` - SubscriptionPage
-- `/subscription/:userId/:keyword` - Keyword subscription feed
-- `/listenlater` - ListenLaterPage
-- `/playlist` - PlayListPage
+- `/subscription/:teleUserId/:keyword` - Keyword subscription feed
+- `/listenlater/:teleUserId` - ListenLaterPage
+- `/playlist` - PlayListIndexPage (landing page)
+- `/playlist/:teleUserId` - PlayListPage (user's playlist list)
+- `/playlist/:teleUserId/:playlistId` - PlayListDetailPage (playlist episodes)
 - `/account` - AccountPage
 
 ### State Management
