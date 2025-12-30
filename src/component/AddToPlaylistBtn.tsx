@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from "./AppContext";
-import type { UserInfo } from "../types/UserInfo";
+import { getTelegramUserInfo, getUserInfoByTelegramUserId } from "../libs/User";
 
 type AddToPlaylistButtonProps = {
     itemTitle: string;
@@ -21,15 +21,10 @@ export default function AddToPlaylistButton(props: AddToPlaylistButtonProps) {
 
     useEffect(() => {
         const getUserInfo = async () => {
-            const userInfo: UserInfo = {
-                userId: '',
-                email: '',
-                token: '',
-                username: '',
-                avatar: ''
-            }
-            if (userInfo && userInfo.userId) {
-                setCurrentUserId(userInfo.userId)
+            const teleUserInfo = getTelegramUserInfo()
+            const userInfoResp = await getUserInfoByTelegramUserId(teleUserInfo.id.toString())
+            if (userInfoResp.code === 0 && userInfoResp.data.userId) {
+                setCurrentUserId(userInfoResp.data.userId)
             } else {
                 // TODO: show login dialog
             }

@@ -1,7 +1,7 @@
 import { addToListenLater } from "../libs/ListenLater";
-import type { UserInfo } from "../types/UserInfo";
 import { useAppContext } from "./AppContext";
 import { MsgAlertType } from "./MsgAlert";
+import { getTelegramUserInfo, getUserInfoByTelegramUserId } from "../libs/User";
 import { useEffect, useState } from "react";
 
 type AddListenLaterButtonProps = {
@@ -18,17 +18,14 @@ export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
     const appContext = useAppContext()
     useEffect(() => {
         const getUserInfo = async () => {
-            const usefInfo: UserInfo = {
-                userId: '',
-                email: '',
-                token: '',
-                username: '',
-                avatar: ''
-            }
             if (userId) {
                 setCurrentUserId(userId)
             } else {
-                setCurrentUserId(usefInfo.userId)
+                const teleUserInfo = getTelegramUserInfo()
+                const userInfoResp = await getUserInfoByTelegramUserId(teleUserInfo.id.toString())
+                if (userInfoResp.code === 0 && userInfoResp.data.userId) {
+                    setCurrentUserId(userInfoResp.data.userId)
+                }
             }
         }
         getUserInfo()

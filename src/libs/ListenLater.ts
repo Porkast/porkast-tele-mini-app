@@ -1,22 +1,13 @@
 import type { UserListenLaterDto } from "../types/ListenLater";
 import type { JsonResponse } from "../types/Response";
-import type { UserInfo } from "../types/UserInfo";
 import { API_URL } from "./Constants";
 
 export async function addToListenLater(channelId: string, itemId: string, userId: string, source: string): Promise<JsonResponse> {
 
-    const userInfo: UserInfo = {
-        userId: '',
-        email: '',
-        token: '',
-        username: '',
-        avatar: ''
-    };
-    const respJson = await fetch(`${API_URL}/listenlater/`, {
+    const respJson = await fetch(`${API_URL}/listenlater`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': userInfo?.token
         },
         body: JSON.stringify({
             channelId: channelId,
