@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { AvatarImage } from "../component/PorkastImage"
-import { getTelegramUserInfo, getUserInfoByTelegramUserId, type ServerUserInfo } from "../libs/User"
-import type { SubscriptionDataDto } from "../types/Subscription"
-import { Link } from "react-router-dom"
-import { getUserSubscriptionList } from "../libs/Subscription"
-import { formatDateTime } from "../libs/Common"
+import { AvatarImage } from "../../component/PorkastImage"
+import { getTelegramUserInfo, getUserInfoByTelegramUserId, type ServerUserInfo } from "../../libs/User"
+import type { SubscriptionDataDto } from "../../types/Subscription"
+import { Link, Outlet } from "react-router-dom"
+import { getUserSubscriptionList } from "../../libs/Subscription"
+import { formatDateTime } from "../../libs/Common"
 
 export default function SubscriptionPage() {
 
@@ -50,7 +50,7 @@ export default function SubscriptionPage() {
         } else {
             nextPage = parseInt(page) + 1
         }
-        setNextPageUrl("/subscription/" + userInfo?.userId + "/" + "?page=" + nextPage)
+        setNextPageUrl("/subscription/" + userInfo?.telegramId + "/" + "?page=" + nextPage)
 
         let prePage = 0
         if (parseInt(page) > 1) {
@@ -58,7 +58,7 @@ export default function SubscriptionPage() {
         } else {
             prePage = parseInt(page)
         }
-        setPrevPageUrl("/subscription/" + userInfo?.userId + "/" + "?page=" + prePage)
+        setPrevPageUrl("/subscription/" + userInfo?.telegramId + "/" + "?page=" + prePage)
 
         if (parseInt(page) >= totalPage) {
             setIsNextBtnClickable(false)
@@ -96,7 +96,7 @@ export default function SubscriptionPage() {
                         subscriptionList?.map((item, index) => {
                             const encodeKeyword = encodeURIComponent(item.Keyword)
                             return (
-                                <a key={index} href={`/subscription/${userInfo?.userId}/${encodeKeyword}`} className="card w-full bg-base-100 shadow-xl mb-6">
+                                <a key={index} href={`/subscription/${userInfo?.telegramId}/${encodeKeyword}`} className="card w-full bg-base-100 shadow-xl mb-6">
                                     <div className="card-body">
                                         {
                                             item.Keyword ? (
@@ -145,6 +145,7 @@ export default function SubscriptionPage() {
                             }
                         </div>
                     </div>
+                    <Outlet />
                 </div>
             </div>
         </>

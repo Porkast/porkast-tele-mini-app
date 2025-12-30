@@ -1,36 +1,36 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getTelegramUserInfo, getUserInfoByTelegramUserId, type ServerUserInfo } from '../libs/User';
-import { getListenLaterListByUserId } from '../libs/ListenLater';
-import { AppProvider } from '../component/AppContext';
-import EpisodeCard from '../component/EpisodeCard';
-import Footer from '../component/Footer';
-import type { UserListenLaterDto } from '../types/ListenLater';
-import { AvatarImage } from '../component/PorkastImage';
-import SubscribeListenLaterBtn from '../component/SubscribeListenLaterButton';
+import { getTelegramUserInfo, getUserInfoByTelegramUserId, type ServerUserInfo } from '../../libs/User';
+import type { FeedItem } from '../../types/FeedItem';
+import { AppProvider } from '../../component/AppContext';
+import { AvatarImage } from '../../component/PorkastImage';
+import EpisodeCard from '../../component/EpisodeCard';
+import Footer from '../../component/Footer';
+import { ShareSearchSubscriptionBtn } from '../../component/Share';
+import UnsubscribeKeywordButton from '../../component/UnsubscribeKeywordButton';
+import SubscribeListenLaterBtn from '../../component/SubscribeListenLaterButton';
+import { getUserKeywordSubscriptionItemList } from '../../libs/Subscription';
 
-export default function ListenLaterPage() {
-    const { teleUserId } = useParams<{ teleUserId: string }>();
+export default function SubscriptionKeywordListPage() {
+    const { teleUserId, keyword } = useParams<{ teleUserId: string; keyword: string }>();
     const searchParams = new URLSearchParams(window.location.search);
     const page = searchParams.get('page') || '1'
 
     const [pageUserId, setPageUserId] = useState("");
     const [totalPage, setTotalPage] = useState(0)
     const [totalCount, setTotalCount] = useState(0)
+    const [userInfo, setUserInfo] = useState<ServerUserInfo>()
     const [nickname, setNickname] = useState("")
+    const [isMyPage, setIsMyPage] = useState(false)
     const [nextPageUrl, setNextPageUrl] = useState("")
     const [prevPageUrl, setPrevPageUrl] = useState("")
     const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
     const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
-    const [itemList, setItemList] = useState<UserListenLaterDto[]>([])
-    const [userInfo, setUserInfo] = useState<ServerUserInfo>()
-    const [isMyPage, setIsMyPage] = useState(false)
+    const [itemList, setItemList] = useState<FeedItem[]>([])
 
     useEffect(() => {
         async function initPageInfo() {
-            window.scrollTo(0, 0)
-            const teleUserInfo = getTelegramUserInfo()
-            const userInfoResp = await getUserInfoByTelegramUserId(teleUserInfo.id.toString())
+            const userInfoResp = await getUserInfoByTelegramUserId(teleUserId || "")
             if (userInfoResp.code != 0) {
                 return
             }
@@ -40,20 +40,19 @@ export default function ListenLaterPage() {
             setNickname(nicknameStr)
             setPageUserId(userInfoData.userId)
 
-            const resp = await getListenLaterListByUserId(userInfoData.userId, parseInt(page))
+            const resp = await getUserKeywordSubscriptionItemList(userInfoData.userId, keyword || "", page)
             const itemDataList = resp.data
             setItemList(itemDataList)
             if (itemDataList && itemDataList.length > 0) {
-                setTotalPage(Math.ceil(itemDataList[0].count / 10))
-                setTotalCount(itemDataList[0].count)
+                setTotalPage(Math.ceil(itemDataList[0].Count / 10))
+                setTotalCount(itemDataList[0].Count)
             } else {
-                setTotalPage(1)
-                setTotalCount(0)
+                return
             }
         }
 
         initPageInfo()
-    }, [page])
+    }, [page, teleUserId, keyword])
 
     useEffect(() => {
         const sessionUser = getTelegramUserInfo()
@@ -69,7 +68,7 @@ export default function ListenLaterPage() {
         } else {
             nextPage = parseInt(page) + 1
         }
-        setNextPageUrl(`/listenlater/${teleUserId}?page=` + nextPage)
+        setNextPageUrl("/subscription/" + teleUserId + "/" + keyword + "?page=" + nextPage)
 
         let prePage = 0
         if (parseInt(page) > 1) {
@@ -77,7 +76,7 @@ export default function ListenLaterPage() {
         } else {
             prePage = parseInt(page)
         }
-        setPrevPageUrl(`/listenlater/${teleUserId}?page=` + prePage)
+        setPrevPageUrl("/subscription/" + teleUserId + "/" + keyword + "?page=" + prePage)
 
         if (parseInt(page) >= totalPage) {
             setIsNextBtnClickable(false)
@@ -89,7 +88,7 @@ export default function ListenLaterPage() {
         } else {
             setIsPreBtnClickable(true)
         }
-    }, [totalCount, totalPage, page, teleUserId])
+    }, [totalCount, totalPage, page, pageUserId, keyword])
 
     return (
         <AppProvider>
@@ -100,11 +99,13 @@ export default function ListenLaterPage() {
                             <div className="flex justify-start mt-4">
                                 <AvatarImage className="w-28" imageUrl={userInfo?.avatar} />
                                 <div className="ml-3">
-                                    <div className="md:text-2xl text-xl font-bold">{nickname} ListenLater</div>
+                                    <div className="md:text-2xl text-xl font-bold">#{keyword}</div>
+                                    <div className="text-sm font-medium text-gray-500 mt-2">Search keyword #{keyword} subscription</div>
                                     {
                                         isMyPage ? (
                                             <div className="mt-4 -ml-2 flex justify-start">
-                                                <SubscribeListenLaterBtn creatorId={userInfo?.userId || ""}  />
+                                                <ShareSearchSubscriptionBtn userId={teleUserId || ""} keyword={keyword || ""} />
+                                                <UnsubscribeKeywordButton userId={teleUserId || ""} keyword={keyword || ""} />
                                             </div>
                                         ) : (
                                             <div className="mt-4 -ml-2 flex justify-start">
@@ -118,22 +119,22 @@ export default function ListenLaterPage() {
                         </div>
                         <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
                         {
-                            itemList.map((item) => {
+                            itemList.map((item, index) => {
                                 return (
-                                    <EpisodeCard key={item.id} data={{
-                                        itemId: item.guid,
-                                        channelId: item.feed_id,
-                                        title: item.title,
-                                        description: item.text_description || item.description,
-                                        image: item.image_url,
-                                        link: item.link,
-                                        rssLink: item.feed_link,
-                                        channelName: item.channel_title,
-                                        authorName: item.author,
-                                        pubDate: item.pub_date,
-                                        audioLength: item.duration,
-                                        audioSrc: item.enclosure_url,
-                                        hideListenLaterBtn: true
+                                    <EpisodeCard key={index} data={{
+                                        itemId: item.GUID,
+                                        channelId: item.FeedId,
+                                        title: item.Title,
+                                        description: item.Description,
+                                        image: item.ImageUrl,
+                                        link: item.Link,
+                                        rssLink: item.FeedLink,
+                                        channelName: item.ChannelTitle,
+                                        authorName: item.Author,
+                                        pubDate: item.PubDate,
+                                        // audioLength: convertMillsTimeToDuration(parseInt(item.Duration)),
+                                        audioLength: item.Duration,
+                                        audioSrc: item.EnclosureUrl
                                     }} />
                                 )
                             })
