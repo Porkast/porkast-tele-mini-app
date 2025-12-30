@@ -36,7 +36,7 @@ export const getTelegramUserInfo = (): TelegramUser => {
     if (import.meta.env.MODE === 'development') {
         user = getDevTelegramUserInfo()
     }
-    console.log(`telegram user info: ${JSON.stringify(user)}`);
+    
     return {
         id: user.id,
         first_name: user.first_name,

@@ -12,7 +12,7 @@ export async function addToListenLater(channelId: string, itemId: string, userId
         username: '',
         avatar: ''
     };
-    const respJson = await fetch(`${API_URL}/listenlater/item/`, {
+    const respJson = await fetch(`${API_URL}/listenlater/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -35,11 +35,11 @@ export const getListenLaterListByUserId = async (userId: string, page: number): 
 
     const limit = 10
     const offset = (page - 1) * limit
-    const resp = await fetch(`${API_URL}/listenlater/list?userId=${userId}&limit=${limit}&offset=${offset}`, {
+    const apiUrl = `${API_URL}/listenlater/list/${userId}?limit=${limit}&offset=${offset}`
+    const resp = await fetch(apiUrl, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': ''
         }
     })
     const respJson = await resp.json()

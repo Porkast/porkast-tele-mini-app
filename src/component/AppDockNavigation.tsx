@@ -1,4 +1,5 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { getTelegramUserInfo } from "../libs/User"
 
 
 function AppDockNavigation() {
@@ -9,14 +10,15 @@ function AppDockNavigation() {
         if (location.pathname === "/" && path === "/") {
             return true
         }
-        return location.pathname === `/${path}`
+        return location.pathname === `/${path}` || location.pathname.startsWith(`/${path}/`)
     }
 
     const onTabClicked = (tab: string) => {
         if (tab === "subscription") {
             navigate("/subscription")
         } else if (tab === "listenlater") {
-            navigate("/listenlater")
+            const sessionUser = getTelegramUserInfo()
+            navigate(`/listenlater/${sessionUser.id}`)
         } else if (tab === "playlist") {
             navigate("/playlist")
         } else if (tab === "account") {
