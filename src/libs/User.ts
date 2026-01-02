@@ -102,9 +102,31 @@ export const syncToServer = async (userInfo: ServerUserInfo) => {
     return resp
 }
 
-export const getUserInfoByTelegramUserId = async (userId: string): Promise<{ code: number, message: string, data: ServerUserInfo }> => {
-    const resp = await fetch(`${API_URL}/user/tele_id/${userId}`)
+type CacheEntry = {
+    data: ServerUserInfo;
+    expiry: number;
+}
+
+const userInfoCache = new Map<string, CacheEntry>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+export const getUserInfoByTelegramUserId = async (teleId: string): Promise<{ code: number, message: string, data: ServerUserInfo }> => {
+    // Check cache
+    const cached = userInfoCache.get(teleId);
+    if (cached && Date.now() < cached.expiry) {
+        return { code: 0, message: 'cached', data: cached.data };
+    }
+
+    const resp = await fetch(`${API_URL}/user/tele_id/${teleId}`)
     const respJson = await resp.json()
+
+    // Store in cache
+    if (respJson.code === 0 && respJson.data) {
+        userInfoCache.set(teleId, {
+            data: respJson.data,
+            expiry: Date.now() + CACHE_TTL
+        });
+    }
 
     return {
         code: respJson.code,
