@@ -33,6 +33,7 @@ export default function SubscriptionKeywordListPage() {
 
     useEffect(() => {
         async function initPageInfo() {
+            window.scrollTo(0, 0)
             const userInfoResp = await getUserInfoByTelegramUserId(teleUserId || "")
             if (userInfoResp.code != 0) {
                 return

@@ -58,6 +58,7 @@ export default function SearchResultPage() {
 
     useEffect(() => {
         const fetchSearchData = async () => {
+            window.scrollTo(0, 0)
             setIsLoading(true)
             const offest = (parseInt(page || '1') - 1) * limit
             const data = await searchPodcastEpisodeFromItunes(queryKeyword || '', 'podcastEpisode', country || 'US', excludeFeedId || '', offest, limit, searchTotalCount)

@@ -26,6 +26,7 @@ export default function SubscriptionPage() {
 
     useEffect(() => {
         async function initPageInfo() {
+            window.scrollTo(0, 0)
             const userInfoResp = await getUserInfoByTelegramUserId(teleUserId.toString())
             setUserInfo(userInfoResp.data)
             var subscriptionDataList: SubscriptionDataDto[] = []
