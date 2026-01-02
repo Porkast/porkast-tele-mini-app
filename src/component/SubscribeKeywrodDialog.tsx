@@ -5,6 +5,7 @@ import { getPodcastInfo } from "../libs/Itunes"
 import type { FeedChannel } from "../types/FeedChannel"
 import type { UserInfo } from "../types/UserInfo"
 import { subscribeSearchKeyword } from "../libs/Subscription"
+import { getTelegramUserInfo, getUserInfoByTelegramUserId } from "../libs/User"
 
 
 export type SubscribeKeywrodDialogRef = {
@@ -21,10 +22,21 @@ const SubscribeKeywrodDialog = forwardRef<SubscribeKeywrodDialogRef>((props, ref
     const [source, setSource] = useState<string>("itunes")
     const [isLoadingExcludeChannelInfo, setIsLoadingExcludeChannelInfo] = useState(false)
     const [isSubscribeLoading, setIsSubscribeLoading] = useState(false)
+    const [currentUserId, setCurrentUserId] = useState('')
+    const [currentToken, setCurrentToken] = useState('')
     const appContext = useAppContext()
 
     useEffect(() => {
         const dialog = document.getElementById('search_keyword_modal') as HTMLDialogElement;
+        const getUserInfo = async () => {
+            const teleUserInfo = getTelegramUserInfo()
+            const userInfoResp = await getUserInfoByTelegramUserId(teleUserInfo.id.toString())
+            if (userInfoResp.code === 0 && userInfoResp.data.userId) {
+                setCurrentUserId(userInfoResp.data.userId)
+                setCurrentToken(userInfoResp.data.token || '')
+            }
+        }
+        getUserInfo()
         if (ref) {
             (ref as any).current = {
                 showDialog: (keyword: string, excludeFeedIds: string, country: string, source: string) => {
@@ -73,14 +85,7 @@ const SubscribeKeywrodDialog = forwardRef<SubscribeKeywrodDialogRef>((props, ref
             return
         }
         setIsSubscribeLoading(true)
-        const userInfo: UserInfo = {
-            userId: '',
-            email: '',
-            token: '',
-            username: '',
-            avatar: ''
-        }
-        const respJson = await subscribeSearchKeyword(userInfo.userId, searchKeywrod, country, source, excludeFeedIdStr, userInfo?.token).finally(() => {
+        const respJson = await subscribeSearchKeyword(currentUserId, searchKeywrod, country, source, excludeFeedIdStr, currentToken).finally(() => {
             setIsSubscribeLoading(false)
         })
         if (respJson.code === 0) {

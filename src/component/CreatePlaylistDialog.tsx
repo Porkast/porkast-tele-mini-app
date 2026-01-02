@@ -1,6 +1,7 @@
 import { type Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { createPlaylist } from "../libs/Playlist"
+import { getTelegramUserInfo, getUserInfoByTelegramUserId } from "../libs/User"
 import type { UserInfo } from "../types/UserInfo"
 import { MsgAlertType } from "./MsgAlert"
 
@@ -16,6 +17,7 @@ const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((_props: Create
 
     const appContext = useAppContext()
     const [userId, setUserId] = useState('')
+    const [currentUserId, setCurrentUserId] = useState('')
     const [isloading, setIsLoading] = useState(false)
     const [playlistName, setPlaylistName] = useState('')
     const [playlistDescription, setPlaylistDescription] = useState('')
@@ -26,7 +28,7 @@ const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((_props: Create
             return
         }
         setIsLoading(true)
-        const createResp = await createPlaylist(userId, playlistName, playlistDescription)
+        const createResp = await createPlaylist(currentUserId, playlistName, playlistDescription)
         if (createResp && createResp.code == 0) {
             const dialog = document.getElementById("createPlaylistModal") as HTMLDialogElement;
             dialog.close()
@@ -43,14 +45,11 @@ const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((_props: Create
             (ref as any).current = {
                 showDialog: async function (isMockData: boolean) {
                     setIsMockData(isMockData)
-                    const userInfo: UserInfo = {
-                        userId: '',
-                        email: '',
-                        token: '',
-                        username: '',
-                        avatar: ''
+                    const teleUserInfo = getTelegramUserInfo()
+                    const userInfoResp = await getUserInfoByTelegramUserId(teleUserInfo.id.toString())
+                    if (userInfoResp.code === 0 && userInfoResp.data.userId) {
+                        setCurrentUserId(userInfoResp.data.userId)
                     }
-                    setUserId(userInfo.userId)
                     if (dialog) {
                         dialog.showModal();
                     }

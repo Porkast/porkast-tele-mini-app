@@ -24,7 +24,7 @@ export default function SubscribeListenLaterBtn(props: SubscribeListenLaterBtnPr
         }
         const currentUserInfo = await getUserInfoByTelegramUserId(currentTeleUserId)
         const creatorUserInfo = await getUserInfoByTelegramUserId(creatorTeleId)
-        const resp = await subscribeUserListenLater(currentUserInfo.data.userId, creatorUserInfo.data.userId, "")
+        const resp = await subscribeUserListenLater(currentUserInfo.data.userId, creatorUserInfo.data.userId, currentUserInfo.data.token || "")
         if (resp.code === 0) {
             appContext.showMsgAlert('Subscribed Success', MsgAlertType.SUCCESS)
         } else {

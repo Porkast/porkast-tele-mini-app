@@ -5,7 +5,7 @@ import { API_URL } from "./Constants"
 
 
 export const subscribeSearchKeyword = async (userId: string, searchKeyword: string, country: string = 'US', source: string = 'itunes', excludeFeedId: string = '', token: string): Promise<JsonResponse> => {
-    var apiUrl = `${API_URL}/subscription/keyword`
+    var apiUrl = `${API_URL}/subscribe/keyword`
     var params = {
         userId: userId,
         keyword: searchKeyword,
@@ -28,7 +28,7 @@ export const subscribeSearchKeyword = async (userId: string, searchKeyword: stri
 }
 
 export const subscribeUserListenLater = async (userId: string, creatorId: string, token: string): Promise<JsonResponse> => {
-    var apiUrl = `${API_URL}/subscription/listenlater`
+    var apiUrl = `${API_URL}/subscribe/listenlater`
     var params = {
         userId: userId,
         creatorId: creatorId
@@ -84,7 +84,7 @@ export const getUserKeywordSubscriptionItemList = async (userId: string, keyword
 }
 
 export const unsubscribeKeyword = async (userId: string, keyword: string): Promise<JsonResponse> => {
-    var apiUrl = `${API_URL}/api/subscription/${userId}/${encodeURIComponent(keyword)}`
+    var apiUrl = `${API_URL}/api/subscribe/${userId}/${encodeURIComponent(keyword)}`
 
     const resp = await fetch(apiUrl, {
         method: 'DELETE',
