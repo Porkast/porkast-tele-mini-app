@@ -258,8 +258,19 @@ const buildFeedChannelModel = (rssFeed: RssFeed, feedLink: string, podcastId: st
     return channelInfo
 }
 
+const CORS_PROXY = 'https://corsproxy.io/?';
+
 const parsePodcastRSS = async (feedUrl: string): Promise<RssFeed> => {
-    const response = await fetch(feedUrl);
+    let response: Response;
+
+    // if has CORS error use CORS proxy
+    try {
+        response = await fetch(feedUrl);
+    } catch (directError) {
+        console.warn('Direct RSS fetch failed, trying proxy:', directError);
+        response = await fetch(CORS_PROXY + encodeURIComponent(feedUrl));
+    }
+
     const xmlText = await response.text();
 
     const parser = new DOMParser();
