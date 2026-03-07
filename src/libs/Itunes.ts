@@ -1,4 +1,5 @@
 import { convertMillsTimeToDuration, getUserLocale } from "./Common"
+import { API_URL } from "./Constants";
 import type { FeedItem } from "../types/FeedItem";
 import type { FeedChannel } from "../types/FeedChannel";
 
@@ -258,7 +259,7 @@ const buildFeedChannelModel = (rssFeed: RssFeed, feedLink: string, podcastId: st
     return channelInfo
 }
 
-const CORS_PROXY = 'https://corsproxy.io/?';
+const CORS_PROXY = `${API_URL}/rss/proxy?url=`;
 
 const parsePodcastRSS = async (feedUrl: string): Promise<RssFeed> => {
     let response: Response;
