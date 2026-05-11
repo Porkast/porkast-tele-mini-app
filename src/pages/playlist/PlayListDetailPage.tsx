@@ -104,7 +104,7 @@ export default function PlayListDetailPage() {
                     <div className='w-full max-w-2xl pl-6 pr-6'>
                         <div className="w-full mb-10">
                             <div className="flex justify-start mt-4">
-                                <AvatarImage className="w-28" imageUrl={userInfo?.avatar} />
+                                <AvatarImage className="w-28" imageUrl={userInfo?.avatar} displayName={nickname} />
                                 <div className="ml-3">
                                     <div className="md:text-2xl text-xl font-bold">{playlistInfo?.PlaylistName}</div>
                                     <div className="text-sm font-medium text-gray-500 mt-2">By {nickname}</div>
