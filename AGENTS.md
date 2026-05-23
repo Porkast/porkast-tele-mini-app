@@ -71,7 +71,7 @@ import { AvatarImage } from './PorkastImage';
 
 ### API Integration
 
-- **Backend API**: `https://porkast.zeabur.app/api` (from `src/libs/Constants.ts`)
+- **Backend API**: `https://api.porkast.com/api` (from `src/libs/Constants.ts`)
 - **iTunes Search API**: Used in `src/libs/Itunes.ts`
 - **Fetch with async/await**: Always handle JSON response explicitly
 - **Cache layer**: User info cached in memory with TTL (see `User.ts:110-111`)
