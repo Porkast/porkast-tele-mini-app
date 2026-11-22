@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { getPodcastEpisodeInfo } from '../libs/Itunes';
 import { removeTextColorStyles } from '../libs/Common';
 import { AppProvider } from '../component/AppContext';
@@ -7,6 +7,7 @@ import Footer from '../component/Footer';
 import AudioPlayButton from '../component/AudioPlayButton';
 import AddListenLaterButton from '../component/AddListenLaterBtn';
 import AddToPlaylistButton from '../component/AddToPlaylistBtn';
+import { AvatarImage } from '../component/PorkastImage';
 import type { FeedChannel } from '../types/FeedChannel';
 import type { FeedItem } from '../types/FeedItem';
 import { useTelegramBackButton } from '../hooks/useTelegramBackButton';
@@ -14,30 +15,44 @@ import { useTelegramBackButton } from '../hooks/useTelegramBackButton';
 export default function PodcastEpisodePage() {
   useTelegramBackButton()
 
-  const { channelId, itemId } = useParams<{ channelId: string; itemId: string }>();
+  const { channelId, '*': rawItemId } = useParams();
+  const { search } = useLocation();
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<{ podcast: FeedChannel; episode: FeedItem } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
     async function fetchEpisodeData() {
-      if (!channelId || !itemId) return;
+      if (!channelId || !rawItemId) {
+        setData(null);
+        setError('Episode not found');
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
-        const episodeData = await getPodcastEpisodeInfo(channelId, itemId);
+        const episodeData = await getPodcastEpisodeInfo(channelId, rawItemId, search);
+        if (cancelled) return;
         setData(episodeData);
       } catch (err) {
+        if (cancelled) return;
         setError('Failed to load episode');
         console.error(err);
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
     fetchEpisodeData();
     window.scrollTo(0, 0);
-  }, [channelId, itemId]);
+    return () => {
+      cancelled = true;
+    };
+  }, [channelId, rawItemId, search]);
 
   if (loading) {
     return (
@@ -81,10 +96,17 @@ export default function PodcastEpisodePage() {
             <div className='w-full'>
               <div className='text-xl font-bold'>{episode.Title}</div>
               <div className="w-full flex justify-start mt-4">
-                <div className="avatar">
-                  <div className="w-24 rounded-xl">
-                    <img src={episode.ImageUrl || podcastInfo.ImageUrl} alt={episode.Title} />
-                  </div>
+                <div className="shrink-0">
+                  <AvatarImage
+                    className="w-24 h-24"
+                    imageUrl={episode.ImageUrl || podcastInfo.ImageUrl}
+                    fallbackUrls={[
+                      episode.ChannelImageUrl,
+                      podcastInfo.ImageUrl,
+                      ...(podcastInfo.FallbackImageUrls || []),
+                    ]}
+                    alt={episode.Title}
+                  />
                 </div>
                 <div className="ml-3">
                   <Link to={podcastChannelLink} className="text-base font-bold mt-2 hover:underline">{podcastInfo.Title}</Link>
@@ -110,8 +132,8 @@ export default function PodcastEpisodePage() {
                   <div className="text-base text-gray-500 w-20 ml-4">{episode.Duration}</div>
                 </div>
                 <div className="flex justify-start items-center md:mt-0 mt-4">
-                  <AddListenLaterButton itemId={episode.GUID || itemId || ''} channelId={channelId || ''} />
-                  <AddToPlaylistButton itemTitle={podcastInfo.Title} itemId={episode.GUID || itemId || ''} channelId={channelId || ''} />
+                  <AddListenLaterButton itemId={episode.GUID || rawItemId || ''} channelId={channelId || ''} />
+                  <AddToPlaylistButton itemTitle={podcastInfo.Title} itemId={episode.GUID || rawItemId || ''} channelId={channelId || ''} />
                 </div>
               </div>
               <p className="mt-4 text-xs">{podcastInfo.Copyright}</p>
