@@ -100,7 +100,12 @@ export default function PodcastChannelPage() {
                             <div className='w-full'>
                                 <div className='text-3xl font-bold'>{channelInfo.Title}</div>
                                 <div className="w-full flex justify-start mt-4">
-                                    <AvatarImage className="w-24" imageUrl={channelInfo.ImageUrl} />
+                                    <AvatarImage
+                                        className="w-24 h-24"
+                                        imageUrl={channelInfo.ImageUrl}
+                                        fallbackUrls={channelInfo.FallbackImageUrls}
+                                        alt={channelInfo.Title}
+                                    />
                                     <div className="ml-3">
                                         <div className="text-sm font-medium text-gray-500 mt-2">By {channelInfo.Author}</div>
                                         <div className="flex justify-start mt-4">
@@ -149,6 +154,11 @@ export default function PodcastChannelPage() {
                                         title: item.HighlightTitle || item.Title,
                                         description: item.TextDescription || item.Description,
                                         image: item.ImageUrl || channelInfo.ImageUrl,
+                                        fallbackImages: [
+                                            item.ChannelImageUrl,
+                                            channelInfo.ImageUrl,
+                                            ...(channelInfo.FallbackImageUrls || []),
+                                        ],
                                         link: item.Link,
                                         rssLink: item.FeedLink,
                                         channelName: item.ChannelTitle,

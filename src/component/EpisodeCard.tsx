@@ -5,6 +5,7 @@ import type { AudioPlayerParams } from '../types/AudioPlayer';
 import { parseHtmlStrinText } from '../libs/Common';
 import { AvatarImage } from './PorkastImage';
 import AddToPlaylistBtn from './AddToPlaylistBtn';
+import { buildPodcastEpisodePath } from '../libs/episodeUrl';
 
 type ExcludeFunction = (channelTitle: string, feedId: string) => void
 
@@ -15,6 +16,7 @@ type EpisodeCardProps = {
         title: string;
         description: string;
         image: string;
+        fallbackImages?: Array<string | undefined | null>;
         link: string;
         rssLink: string;
         channelName: string;
@@ -32,8 +34,7 @@ type EpisodeCardProps = {
 export default function EpisodeCard(props: EpisodeCardProps) {
 
     const { data } = props
-    const urlEncodeItemId = encodeURIComponent(data.itemId)
-    const podcastEpisodeLink = "/podcast/" + data.channelId + "/episode/" + urlEncodeItemId
+    const podcastEpisodeLink = buildPodcastEpisodePath(data.channelId, data.itemId)
     const podcastChannelLink = "/podcast/" + data.channelId
     data.title = data.title.replace('highlightPlaceholder', 'className="text-primary"');
     data.authorName = data.authorName.replace('highlightPlaceholder', 'className="text-primary"');
@@ -68,7 +69,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                 <a href={podcastEpisodeLink} className="md:text-2xl text-xl font-medium mt-9">{parse(data.title)}</a>
                 <div className="w-full flex justify-start mt-4">
                     <a href={podcastChannelLink} >
-                        <AvatarImage className='w-24 h-24' imageUrl={data.image} />
+                        <AvatarImage className='w-24 h-24' imageUrl={data.image} fallbackUrls={data.fallbackImages} alt={data.title} />
                     </a>
                     <div className="ml-3">
                         <div className='md:flex md:justify-start items-center'>

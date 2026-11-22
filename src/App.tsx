@@ -34,7 +34,7 @@ function App() {
                     <Route path="search" element={<SearchResultPage />} />
                     <Route path="/subscription/:teleUserId/:keyword" element={<SubscriptionKeywordListPage />} />
                     <Route path="/podcast/:channelId" element={<PodcastChannelPage />} />
-                    <Route path="/podcast/:channelId/episode/:itemId" element={<PodcastEpisodePage />} />
+                    <Route path="/podcast/:channelId/episode/*" element={<PodcastEpisodePage />} />
                 </Routes>
             </BrowserRouter>
         </AppProvider>
